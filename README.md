@@ -6,12 +6,12 @@ Quantile Function
 
 The [quantile function](https://en.wikipedia.org/wiki/Quantile_function) for a [Erlang](https://en.wikipedia.org/wiki/Erlang_distribution) random variable is
 
-<div class="equation" align="center" data-raw-text="" data-equation="eq:quantile_function">
-	<img src="" alt="Quantile function for a Erlang distribution.">
+<div class="equation" align="center" data-raw-text="Q(p;k,\lambda) = \frac{1}{\lambda} P^{-1}\left( p, k \right )" data-equation="eq:quantile_function">
+	<img src="https://cdn.rawgit.com/distributions-io/erlang-quantile/41b4861f0ade539d7a8be873cf378006d401d650/docs/img/eqn.svg" alt="Quantile function for a Erlang distribution.">
 	<br>
 </div>
 
-for `0 <= p < 1`, where `k` is the shape parameter and `lambda` is the rate parameter.
+for `0 <= p < 1`, where `k` is the shape parameter and `lambda` is the rate parameter of the distribution.  `P^{-1}` is the [inverse of the lower regularized incomplete gamma function](https://github.com/compute-io/gammaincinv)..
 
 ## Installation
 
@@ -40,15 +40,15 @@ var matrix = require( 'dstructs-matrix' ),
 	i;
 
 out = quantile( 0.25 );
-// returns
+// returns ~0.288
 
 x = [ 0, 0.2, 0.4, 0.6, 0.8, 1 ];
 out = quantile( x );
-// returns [...]
+// returns [ 0, ~0.223, ~0.511, ~0.916, ~1.61, +Infinity ]
 
 x = new Float32Array( x );
 out = quantile( x );
-// returns Float64Array( [...] )
+// returns Float64Array( [0,~0.223,~0.511,~0.916,~1.61,+Infinity] )
 
 x = new Float32Array( 6 );
 for ( i = 0; i < 6; i++ ) {
@@ -63,9 +63,9 @@ mat = matrix( x, [3,2], 'float32' );
 
 out = quantile( mat );
 /*
-	[
-
-	   ]
+	[  0     ~0.182
+	  ~0.405 ~0.693
+	  ~1.1   ~1.79 ]
 */
 ```
 
@@ -85,10 +85,10 @@ A [Erlang](https://en.wikipedia.org/wiki/Erlang_distribution) distribution is a 
 var x = [ 0, 0.2, 0.4, 0.6, 0.8, 1 ];
 
 var out = quantile( x, {
-	'k': 7,
-	'lambda': 4
+	'k': 5,
+	'lambda': 3
 });
-// returns [...]
+// returns [ 0, ~1.03, ~1.38, ~1.75, ~2.24, +Infinity ]
 ```
 
 For non-numeric `arrays`, provide an accessor `function` for accessing `array` values.
@@ -110,7 +110,7 @@ function getValue( d, i ) {
 var out = quantile( data, {
 	'accessor': getValue
 });
-// returns [...]
+// returns [ 0, ~0.223, ~0.511, ~0.916, ~1.61, +Infinity ]
 ```
 
 
@@ -132,12 +132,12 @@ var out = quantile( data, {
 });
 /*
 	[
-		{'x':[0,]},
-		{'x':[1,]},
-		{'x':[2,]},
-		{'x':[3,]},
-		{'x':[4,]},
-		{'x':[5,]}
+		{'x':[0,0]},
+		{'x':[1,~0.223]},
+		{'x':[2,~0.511]},
+		{'x':[3,~0.916]},
+		{'x':[4,~1.61]},
+		{'x':[5,+Infinity]}
 	]
 */
 
@@ -155,13 +155,13 @@ x = new Float32Array( [0.2,0.4,0.6,0.8] );
 out = quantile( x, {
 	'dtype': 'int32'
 });
-// returns Int32Array( [...] )
+// returns Int32Array( [0,0,0,1] )
 
 // Works for plain arrays, as well...
 out = quantile( [0.2,0.4,0.6,0.8], {
 	'dtype': 'uint8'
 });
-// returns Uint8Array( [...] )
+// returns Uint8Array( [0,0,0,1] )
 ```
 
 By default, the function returns a new data structure. To mutate the input data structure (e.g., when input values can be discarded or when optimizing memory usage), set the `copy` option to `false`.
@@ -178,7 +178,7 @@ x = [ 0, 0.2, 0.4, 0.6, 0.8, 1 ];
 out = quantile( x, {
 	'copy': false
 });
-// returns [...]
+// returns [ 0, ~0.223, ~0.511, ~0.916, ~1.61, +Infinity ]
 
 bool = ( x === out );
 // returns true
@@ -198,9 +198,9 @@ out = quantile( mat, {
 	'copy': false
 });
 /*
-	[
-
-	   ]
+	[  0     ~0.182
+	  ~0.405 ~0.693
+	  ~1.1   ~1.79 ]
 */
 
 bool = ( mat === out );

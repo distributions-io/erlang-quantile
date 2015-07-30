@@ -3,7 +3,7 @@ library( jsonlite )
 
 
 k = 1
-lambda = 1
+lambda = 6.5
 probs = seq( 0, 1, 0.01 )
 y = qgamma( probs, k, lambda )
 

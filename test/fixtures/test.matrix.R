@@ -1,8 +1,8 @@
 options( digits = 16 )
 library( jsonlite )
 
-k = 1
-lambda = 1
+k = 2
+lambda = 0.6
 probs = 0:24 / 25
 y = qgamma( probs, k, lambda )
 
